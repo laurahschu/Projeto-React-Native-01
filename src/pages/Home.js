@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
@@ -9,6 +8,8 @@ import {
   Alert,
   TouchableOpacity,
   ActivityIndicator,
+  Keyboard,
+  TouchableWithoutFeedback
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
@@ -31,6 +32,8 @@ export default function Home() {
       return;
     }
 
+    Keyboard.dismiss(); // Fecha o teclado ao clicar no botão
+
     setLoading(true); 
 
     setTimeout(() => {
@@ -43,33 +46,39 @@ export default function Home() {
   };
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={require('../assets/logo.png')} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
+      <View style={styles.container}>
+        <Image style={styles.image} source={require('../assets/logo.png')} />
 
-      <Text style={styles.title}>Informe o Consumo de Gasolina:</Text>
+        <Text style={styles.title}>Informe o Consumo de Gasolina:</Text>
 
-      <TextInput 
-        value={quilometragem}
-        onChangeText={setQuilometragem}
-        placeholder="Quilometragem (Km)"
-        style={styles.input}
-        keyboardType="numeric" 
-      />
+        <TextInput 
+          value={quilometragem}
+          onChangeText={setQuilometragem}
+          placeholder="Quilometragem (Km)"
+          style={styles.input}
+          keyboardType="numeric" 
+          returnKeyType="next"
+          onSubmitEditing={() => Keyboard.dismiss()} // Fecha o teclado ao terminar o campo
+        />
 
-      <TextInput 
-        value={litros}
-        onChangeText={setLitros}
-        placeholder="Gasolina (Litros)"
-        style={styles.input}
-        keyboardType="numeric" 
-      />
+        <TextInput 
+          value={litros}
+          onChangeText={setLitros}
+          placeholder="Gasolina (Litros)"
+          style={styles.input}
+          keyboardType="numeric"
+          returnKeyType="done"
+          onSubmitEditing={() => Keyboard.dismiss()} // Fecha o teclado ao terminar o campo
+        />
 
-      <TouchableOpacity style={styles.button} onPress={IrParaConsumo} disabled={loading}>
-        <Text style={styles.buttonText}>Executar</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={IrParaConsumo} disabled={loading}>
+          <Text style={styles.buttonText}>Executar</Text>
+        </TouchableOpacity>
 
-      {loading && <ActivityIndicator style={styles.loading} size="large" color={"darkred"} />}
-    </View>
+        {loading && <ActivityIndicator style={styles.loading} size="large" color={"darkred"} />}
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
